@@ -18,6 +18,11 @@ class Bit(object):
         return cmp(self.value, other.value)
 
 
+class Morph(object):
+    def get_value(self, morph):
+        return morph
+
+
 class TestHOM(unittest.TestCase):
     def setUp(self):
         self.raw_bits = (True, True, False)
@@ -25,6 +30,7 @@ class TestHOM(unittest.TestCase):
         self.bits = [Bit(i) for i in self.raw_bits]
         self.texts = [Bit(i) for i in self.raw_texts]
         self.numbers = [Bit(i) for i in range(10)]
+        self.morphs = [Morph() for i in range(4)]
 
     def test_select(self):
         seq = hom.select(self.bits).get_value()
@@ -51,6 +57,14 @@ class TestHOM(unittest.TestCase):
         self.assertTrue(isinstance(seq, hom.list))
         self.assertEqual(len(seq), 3)
 
+        seq = hom.select(self.morphs).get_value(True)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 4)
+
+        seq = hom.select(self.morphs).get_value(morph=True)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 4)
+
     def test_collect(self):
         seq = hom.collect(self.bits).get_value()
         self.assertTrue(isinstance(seq, hom.list))
@@ -63,6 +77,10 @@ class TestHOM(unittest.TestCase):
         seq = hom.collect(self.numbers).get_value()
         self.assertTrue(isinstance(seq, hom.list))
         self.assertEqual(list(seq), range(10))
+
+        seq = hom.collect(self.morphs).get_value(1)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(list(seq), [1 for i in range(4)])
 
     def test_do(self):
         ref = [Bit(True) for i in range(len(self.bits))]
