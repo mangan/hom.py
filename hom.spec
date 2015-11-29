@@ -1,0 +1,34 @@
+Name:		python-hom
+Version:	1.0
+Release:	1%{?dist}
+BuildArch:	noarch
+Summary:	Higher Order Messages for lists
+
+License:	MIT
+Source0:	hom.py-%{version}.tar.gz
+
+%description
+Higher Order Messages provides another level of abstraction to iterate over
+list. Following OOP manner lists are iterated via special methods rather then
+loops.
+
+
+%prep
+%setup -q
+
+
+%build
+%{__python} setup.py build
+
+%install
+%{__python} setup.py install --skip-build --root %{buildroot}
+
+
+%files
+%{python_sitelib}/hom.py
+%{python_sitelib}/hom.pyc
+%{python_sitelib}/hom.py-*.egg-info
+
+
+%changelog
+
