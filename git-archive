@@ -1,0 +1,7 @@
+#!/bin/bash
+
+NAME=$(basename $(realpath $(dirname $0)))
+VERSION=1.0
+REF=HEAD
+
+git archive --prefix $NAME-$VERSION/ -o $NAME-$VERSION.tar.gz $REF

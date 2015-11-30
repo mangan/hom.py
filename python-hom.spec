@@ -1,3 +1,4 @@
+%global srcname hom.py
 Name:		python-hom
 Version:	1.0
 Release:	1%{?dist}
@@ -5,7 +6,10 @@ BuildArch:	noarch
 Summary:	Higher Order Messages for lists
 
 License:	MIT
-Source0:	hom.py-%{version}.tar.gz
+Source0:	%{srcname}-%{version}.tar.gz
+
+BuildRequires:	python
+
 
 %description
 Higher Order Messages provides another level of abstraction to iterate over
@@ -14,20 +18,20 @@ loops.
 
 
 %prep
-%setup -q
+%setup -n %{srcname}-%{version}
 
 
 %build
 %{__python} setup.py build
+
 
 %install
 %{__python} setup.py install --skip-build --root %{buildroot}
 
 
 %files
-%{python_sitelib}/hom.py
-%{python_sitelib}/hom.pyc
-%{python_sitelib}/hom.py-*.egg-info
+%{python_sitelib}/hom.py*
+%{python_sitelib}/%{srcname}-*.egg-info
 
 
 %changelog
