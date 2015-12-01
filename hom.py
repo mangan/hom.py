@@ -1,4 +1,19 @@
+import __builtin__
 import operator
+
+
+class list(__builtin__.list):
+    def select(self, where=True, op=operator.eq):
+        return _Select(self, where, op)
+
+    def collect(self):
+        return _Collect(self)
+
+    def do(self):
+        return _Do(self)
+
+    def each(self, function):
+        return list([function(i) for i in self])
 
 
 def select(seq, where=True, op=operator.eq):
@@ -13,15 +28,8 @@ def do(seq):
     return _Do(seq)
 
 
-class list(list):
-    def select(self, where=True, op=operator.eq):
-        return _Select(self, where, op)
-
-    def collect(self):
-        return _Collect(self)
-
-    def do(self):
-        return _Do(self)
+def each(seq, function):
+    return list(seq).each(function)
 
 
 class _HOMProxy(object):

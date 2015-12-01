@@ -95,6 +95,17 @@ class TestHOM(unittest.TestCase):
         hom.do(self.numbers).set_value(7)
         self.assertEqual(list(self.numbers), ref)
 
+    def test_each(self):
+        ref = [Bit, Bit, Bit]
+        seq = hom.each(self.bits, type)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(list(seq), ref)
+
+        seq = hom.list(self.bits).each(type)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(list(seq), ref)
+
+
     def test_chain(self):
         ref = [Bit(0)] + [Bit(7) for i in range(9)]
         seq = hom.list(self.numbers).select(1, operator.ge).get_value()
