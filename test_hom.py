@@ -84,16 +84,22 @@ class TestHOM(unittest.TestCase):
 
     def test_do(self):
         ref = [Bit(True) for i in range(len(self.bits))]
-        hom.do(self.bits).set_value(True)
+        seq = hom.do(self.bits).set_value(True)
         self.assertEqual(list(self.bits), ref)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(seq, self.bits)
 
         ref = [Bit("bum") for i in range(len(self.texts))]
-        hom.do(self.texts).set_value("bum")
+        seq = hom.do(self.texts).set_value("bum")
         self.assertEqual(list(self.texts), ref)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(seq, self.texts)
 
         ref = [Bit(7) for i in range(10)]
-        hom.do(self.numbers).set_value(7)
+        seq = hom.do(self.numbers).set_value(7)
         self.assertEqual(list(self.numbers), ref)
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(seq, self.numbers)
 
     def test_each(self):
         ref = [Bit, Bit, Bit]
@@ -105,12 +111,12 @@ class TestHOM(unittest.TestCase):
         self.assertTrue(isinstance(seq, hom.list))
         self.assertEqual(list(seq), ref)
 
-
     def test_chain(self):
         ref = [Bit(0)] + [Bit(7) for i in range(9)]
         seq = hom.list(self.numbers).select(1, operator.ge).get_value()
         seq.do().set_value(7)
         self.assertEqual(list(self.numbers), ref)
+
 
 if __name__ == "__main__":
     unittest.main()

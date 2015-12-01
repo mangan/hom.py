@@ -69,3 +69,4 @@ class _Do(_HOMProxy):
     def __call__(self, *args, **kwargs):
         for i in self._seq:
             self._call(i, *args, **kwargs)
+        return list(self._seq)
