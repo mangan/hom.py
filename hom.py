@@ -12,6 +12,9 @@ class list(__builtin__.list):
     def do(self):
         return _Do(self)
 
+    def reduce(self):
+        return _Reduce(self)
+
     def each(self, function):
         if len(self) == 0:
             raise EmptyListError(".each() Called on empty list")
@@ -28,6 +31,10 @@ def collect(seq):
 
 def do(seq):
     return _Do(seq)
+
+
+def reduce(seq):
+    return _Reduce(seq)
 
 
 def each(seq, function):
@@ -83,3 +90,9 @@ class _Do(_HOMProxy):
         for i in self._seq:
             self._call(i, *args, **kwargs)
         return list(self._seq)
+
+
+class _Reduce(_HOMProxy):
+    def __call__(self, *args, **kwargs):
+        self._check()
+        return __builtin__.reduce(lambda a, b: self._call(a, b), self._seq)

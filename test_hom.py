@@ -101,6 +101,15 @@ class TestHOM(unittest.TestCase):
         self.assertTrue(isinstance(seq, hom.list))
         self.assertEqual(seq, self.numbers)
 
+    def test_reduce(self):
+        one = [1, 2]
+        two = [3, 4]
+        both = [one, two]
+        expected = one + two
+
+        result = hom.reduce(both).__add__()
+        self.assertEqual(result, expected)
+
     def test_each(self):
         ref = [Bit, Bit, Bit]
         seq = hom.each(self.bits, type)
