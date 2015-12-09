@@ -13,6 +13,8 @@ class list(__builtin__.list):
         return _Do(self)
 
     def each(self, function):
+        if len(self) == 0:
+            raise EmptyListError(".each() Called on empty list")
         return list([function(i) for i in self])
 
 
@@ -32,6 +34,10 @@ def each(seq, function):
     return list(seq).each(function)
 
 
+class EmptyListError(Exception):
+    pass
+
+
 class _HOMProxy(object):
     def __init__(self, seq):
         self._seq = seq
@@ -47,6 +53,10 @@ class _HOMProxy(object):
             call = getattr(call, key)
         return call(*args, **kwargs)
 
+    def _check(self):
+        if len(self._seq) == 0:
+            raise EmptyListError("HOM called on empty list")
+
 
 class _Select(_HOMProxy):
     def __init__(self, seq, where, op):
@@ -55,6 +65,7 @@ class _Select(_HOMProxy):
         self._op = op
 
     def __call__(self, *args, **kwargs):
+        self._check()
         return list(
             [i for i in self._seq
             if self._op(self._call(i, *args, **kwargs), self._where)])
@@ -62,11 +73,13 @@ class _Select(_HOMProxy):
 
 class _Collect(_HOMProxy):
     def __call__(self, *args, **kwargs):
+        self._check()
         return list([self._call(i, *args, **kwargs) for i in self._seq])
 
 
 class _Do(_HOMProxy):
     def __call__(self, *args, **kwargs):
+        self._check()
         for i in self._seq:
             self._call(i, *args, **kwargs)
         return list(self._seq)
