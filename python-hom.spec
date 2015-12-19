@@ -1,6 +1,6 @@
 %global srcname hom.py
 Name:		python-hom
-Version:	1.3
+Version:	1.4
 Release:	1%{?dist}
 BuildArch:	noarch
 Summary:	Higher Order Messages for lists
