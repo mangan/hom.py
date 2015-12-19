@@ -54,17 +54,6 @@ class _HOMProxy(object):
         self._keys.append(key)
         return self
 
-    def _call(self, target, *args, **kwargs):
-        for key in self._keys:
-            target = getattr(target, key)
-        if callable(target):
-            return target(*args, **kwargs)
-        return target
-
-    def _check(self):
-        if len(self._seq) == 0:
-            raise EmptyListError("HOM called on empty list")
-
 
 class _Select(_HOMProxy):
     def __init__(self, seq, where, op):
@@ -73,27 +62,69 @@ class _Select(_HOMProxy):
         self._op = op
 
     def __call__(self, *args, **kwargs):
-        self._check()
-        return list(
-            [i for i in self._seq
-            if self._op(self._call(i, *args, **kwargs), self._where)])
+        if len(self._seq) == 0:
+            raise EmptyListError("HOM called on empty list")
+        result = list()
+        append = result.append
+        call = None
+        keys = self._keys
+        op = self._op
+        where = self._where
+        for i in self._seq:
+            target = i
+            for key in keys:
+                target = getattr(target, key)
+            if call is None:
+                call = callable(target)
+            if call:
+                if op(target(*args, **kwargs), where):
+                    append(i)
+            elif op(target, where):
+                append(i)
+        return result
 
 
 class _Collect(_HOMProxy):
     def __call__(self, *args, **kwargs):
-        self._check()
-        return list([self._call(i, *args, **kwargs) for i in self._seq])
+        if len(self._seq) == 0:
+            raise EmptyListError("HOM called on empty list")
+        result = list()
+        append = result.append
+        call = None
+        keys = self._keys
+        for target in self._seq:
+            for key in keys:
+                target = getattr(target, key)
+            if call is None:
+                call = callable(target)
+            if call:
+                append(target(*args, **kwargs))
+            else:
+                append(target)
+        return result
 
 
 class _Do(_HOMProxy):
     def __call__(self, *args, **kwargs):
-        self._check()
-        for i in self._seq:
-            self._call(i, *args, **kwargs)
+        if len(self._seq) == 0:
+            raise EmptyListError("HOM called on empty list")
+        keys = self._keys
+        for target in self._seq:
+            for key in keys:
+                target = getattr(target, key)
+            target(*args, **kwargs)
         return list(self._seq)
 
 
 class _Reduce(_HOMProxy):
     def __call__(self):
-        self._check()
-        return __builtin__.reduce(self._call, self._seq)
+        if len(self._seq) == 0:
+            raise EmptyListError("HOM called on empty list")
+        result = self._seq[0]
+        keys = self._keys
+        for i in self._seq[1:]:
+            target = result
+            for key in keys:
+                target = getattr(target, key)
+            result = target(i)
+        return result
