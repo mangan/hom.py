@@ -93,6 +93,6 @@ class _Do(_HOMProxy):
 
 
 class _Reduce(_HOMProxy):
-    def __call__(self, *args, **kwargs):
+    def __call__(self):
         self._check()
-        return __builtin__.reduce(lambda a, b: self._call(a, b), self._seq)
+        return __builtin__.reduce(self._call, self._seq)
