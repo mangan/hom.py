@@ -54,11 +54,12 @@ class _HOMProxy(object):
         self._keys.append(key)
         return self
 
-    def _call(self, obj, *args, **kwargs):
-        call = obj
+    def _call(self, target, *args, **kwargs):
         for key in self._keys:
-            call = getattr(call, key)
-        return call(*args, **kwargs)
+            target = getattr(target, key)
+        if callable(target):
+            return target(*args, **kwargs)
+        return target
 
     def _check(self):
         if len(self._seq) == 0:

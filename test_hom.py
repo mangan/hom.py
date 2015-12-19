@@ -65,6 +65,30 @@ class TestHOM(unittest.TestCase):
         self.assertTrue(isinstance(seq, hom.list))
         self.assertEqual(len(seq), 4)
 
+        seq = hom.select(self.bits).value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 2)
+
+        seq = hom.select(self.bits, False).value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 1)
+
+        seq = hom.select(self.texts, "Kuk").value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 2)
+
+        seq = hom.select(self.texts, "NNN").value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 0)
+
+        seq = hom.select(self.numbers, 6).value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 1)
+
+        seq = hom.select(self.numbers, 6, operator.gt).value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(len(seq), 3)
+
     def test_collect(self):
         seq = hom.collect(self.bits).get_value()
         self.assertTrue(isinstance(seq, hom.list))
@@ -81,6 +105,18 @@ class TestHOM(unittest.TestCase):
         seq = hom.collect(self.morphs).get_value(1)
         self.assertTrue(isinstance(seq, hom.list))
         self.assertEqual(list(seq), [1 for i in range(4)])
+
+        seq = hom.collect(self.bits).value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(list(seq), list(self.raw_bits))
+
+        seq = hom.collect(self.texts).value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(list(seq), list(self.raw_texts))
+
+        seq = hom.collect(self.numbers).value()
+        self.assertTrue(isinstance(seq, hom.list))
+        self.assertEqual(list(seq), range(10))
 
     def test_do(self):
         ref = [Bit(True) for i in range(len(self.bits))]
